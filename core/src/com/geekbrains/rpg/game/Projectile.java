@@ -36,10 +36,25 @@ public class Projectile {
         }
     }
 
-    public void update(float dt) {
+    private boolean checkBorders() {
+        return position.x < 0 || position.x > 1280 || position.y < 0 || position.y > 720;
+    }
+
+    private boolean checkShot(Apple apple) {
+        return  position.x >= (apple.getPosition().x - 32) &&
+                position.x <= (apple.getPosition().x + 32) &&
+                position.y >= (apple.getPosition().y - 32) &&
+                position.y <= (apple.getPosition().y + 32);
+    }
+
+    public void update(float dt, Apple apple) {
         if (active) {
             position.mulAdd(velocity, dt);
-            if (position.x < 0 || position.x > 1280 || position.y < 0 || position.y > 720) {
+            if (checkBorders()) {
+                deactivate();
+            }
+            if (checkShot(apple)) {
+                apple.crash();
                 deactivate();
             }
         }
