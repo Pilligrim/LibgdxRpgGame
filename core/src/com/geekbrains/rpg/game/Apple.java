@@ -3,6 +3,7 @@ package com.geekbrains.rpg.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 
 public class Apple {
@@ -32,5 +33,13 @@ public class Apple {
         if (!isAlive) {
            changePosition();
         }
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public void crash() {
+        this.isAlive = false;
     }
 }

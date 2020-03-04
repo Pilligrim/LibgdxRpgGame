@@ -2,6 +2,7 @@ package com.geekbrains.rpg.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,6 +16,7 @@ public class GeekRpgGame extends ApplicationAdapter {
     private TextureRegion textureGrass;
     private Hero hero;
     private Apple apple;
+    private Projectile projectile;
 
     // Домашнее задание:
     // 0. Разобраться с кодом
@@ -30,12 +32,13 @@ public class GeekRpgGame extends ApplicationAdapter {
         this.textureGrass = atlas.findRegion("grass");
         this.font32 = new BitmapFont(Gdx.files.internal("font32.fnt"));
         this.apple = new Apple(atlas);
+        this.projectile = new Projectile(atlas);
     }
 
     @Override
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
-        update(dt);
+        update(dt,apple);
         Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
@@ -46,11 +49,18 @@ public class GeekRpgGame extends ApplicationAdapter {
         }
         hero.render(batch);
         hero.renderGUI(batch, font32);
+        projectile.render(batch);
+        apple.render(batch);
         batch.end();
     }
 
-    public void update(float dt) {
+    public void update(float dt, Apple apple) {
         hero.update(dt);
+        projectile.update(dt, apple);
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            projectile.setup(hero.getPosition().x, hero.getPosition().y , Gdx.input.getX(), 720.0f - Gdx.input.getY());
+        }
+        apple.update(dt);
     }
 
     @Override
