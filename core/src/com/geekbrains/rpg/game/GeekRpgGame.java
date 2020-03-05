@@ -1,66 +1,39 @@
 package com.geekbrains.rpg.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
-public class GeekRpgGame extends ApplicationAdapter {
+public class GeekRpgGame extends Game {
     private SpriteBatch batch;
-    private BitmapFont font32;
-    private TextureAtlas atlas;
-    private TextureRegion textureGrass;
-    private Hero hero;
-    private Apple apple;
-    private Projectile projectile;
 
     // Домашнее задание:
-    // 0. Разобраться с кодом
-    // 1. Добавить на экран яблоко, и попробовать отследить попадание
-    // стрелы в яблоко, при попадании яблоко должно появиться в новом месте
-    // 2. ** Попробуйте заставить героя выпускать по несколько стрел
+    // - Разбор кода и пишите какие вопросы возникли
+    // - Если здоровье монстра падает до 0, перекидываем его в другую точку
+    // и залечиваем полностью, герою даем монетку (от 3 до 10)
+    // - * Если монстр подошел близко к герою, то раз в 0.5 сек он долен
+    // наносить герою 1 урона
 
     @Override
     public void create() {
-        this.batch = new SpriteBatch();
-        this.atlas = new TextureAtlas("game.pack");
-        this.hero = new Hero(atlas);
-        this.textureGrass = atlas.findRegion("grass");
-        this.font32 = new BitmapFont(Gdx.files.internal("font32.fnt"));
-        this.apple = new Apple(atlas);
-        this.projectile = new Projectile(atlas);
+        batch = new SpriteBatch();
+        ScreenManager.getInstance().init(this, batch);
+        ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
     }
 
     @Override
     public void render() {
-        float dt = Gdx.graphics.getDeltaTime();
-        update(dt,apple);
-        Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        for (int i = 0; i < 16; i++) {
-            for (int j = 0; j < 9; j++) {
-                batch.draw(textureGrass, i * 80, j * 80);
-            }
-        }
-        hero.render(batch);
-        hero.renderGUI(batch, font32);
-        projectile.render(batch);
-        apple.render(batch);
-        batch.end();
-    }
-
-    public void update(float dt, Apple apple) {
-        hero.update(dt);
-        projectile.update(dt, apple);
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
-            projectile.setup(hero.getPosition().x, hero.getPosition().y , Gdx.input.getX(), 720.0f - Gdx.input.getY());
-        }
-        apple.update(dt);
+        float dt = Gdx.graphics.getDeltaTime();
+        getScreen().render(dt);
     }
 
     @Override
