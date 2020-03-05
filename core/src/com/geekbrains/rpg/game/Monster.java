@@ -1,8 +1,5 @@
 package com.geekbrains.rpg.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -15,13 +12,11 @@ public class Monster {
     private Vector2 dst;
     private Vector2 tmp;
     private float lifetime;
+    private float attackTime;
     private float speed;
     private int hp;
     private int hpMax;
-
-    public Vector2 getPosition() {
-        return position;
-    }
+    private int damage;
 
     public Monster(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -33,10 +28,25 @@ public class Monster {
         this.speed = 100.0f;
         this.hpMax = 30;
         this.hp = 30;
+        this.damage = 1;
     }
 
-    public void takeDamage(int amount) {
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    private void respawn() {
+        hp = hpMax;
+        position.set((float) (50 + Math.random() * 1200), (float) (50 + Math.random() * 640));
+    }
+
+    public boolean takeDamage(int amount) {
         hp -= amount;
+        if (hp <= 0) {
+            respawn();
+            return true;
+        }
+        return false;
     }
 
     public void render(SpriteBatch batch) {
@@ -49,6 +59,14 @@ public class Monster {
     public void update(float dt) {
         lifetime += dt;
         tmp.set(gameScreen.getHero().getPosition()).sub(position).nor().scl(speed);
-        position.mulAdd(tmp, dt);
+        if (position.dst(gameScreen.getHero().getPosition()) < 40) {
+            attackTime += dt;
+        } else{
+            position.mulAdd(tmp, dt);
+        }
+        if (attackTime > 0.5f) {
+            attackTime = 0.0f;
+            gameScreen.getHero().takeDamage(this.damage);
+        }
     }
 }
