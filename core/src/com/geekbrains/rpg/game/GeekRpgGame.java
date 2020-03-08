@@ -1,25 +1,22 @@
 package com.geekbrains.rpg.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.screens.ScreenManager;
 
 public class GeekRpgGame extends Game {
     private SpriteBatch batch;
 
     // Домашнее задание:
     // - Разбор кода и пишите какие вопросы возникли
-    // - Если здоровье монстра падает до 0, перекидываем его в другую точку
-    // и залечиваем полностью, герою даем монетку (от 3 до 10)
-    // - * Если монстр подошел близко к герою, то раз в 0.5 сек он долен
-    // наносить герою 1 урона
+    // - Бот должен бегать и атаковать игрока только если герой зашел
+    // в зону видимости бота (300 пикселей)
+    // - Сделать пачку ботов
+    // - При уничтожении бот должен исчезать
+    // - * Раз в 30 секунд должен появляться новый бот
+    // - * Если герой не в зоне видимости бота, то бот просто бродит по карте
 
     @Override
     public void create() {
