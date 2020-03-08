@@ -1,11 +1,9 @@
 package com.geekbrains.rpg.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameScreen extends AbstractScreen {
@@ -14,6 +12,11 @@ public class GameScreen extends AbstractScreen {
     private ProjectilesController projectilesController;
     private Hero hero;
     private Monster monster;
+    private int gold;
+
+    public GameScreen(SpriteBatch batch) {
+        super(batch);
+    }
 
     public Hero getHero() {
         return hero;
@@ -21,10 +24,6 @@ public class GameScreen extends AbstractScreen {
 
     public ProjectilesController getProjectilesController() {
         return projectilesController;
-    }
-
-    public GameScreen(SpriteBatch batch) {
-        super(batch);
     }
 
     @Override
@@ -57,9 +56,7 @@ public class GameScreen extends AbstractScreen {
     public void update(float dt) {
         hero.update(dt);
         monster.update(dt);
-
         checkCollisions();
-
         projectilesController.update(dt);
     }
 
@@ -68,7 +65,10 @@ public class GameScreen extends AbstractScreen {
             Projectile p = projectilesController.getActiveList().get(i);
             if (p.getPosition().dst(monster.getPosition()) < 24) {
                 p.deactivate();
-                monster.takeDamage(1);
+                if (monster.takeDamage(p.getDamage())) {
+                    gold = (int) (3 + Math.random() * 7);
+                    hero.addGold(gold);
+                }
             }
         }
     }

@@ -2,10 +2,8 @@ package com.geekbrains.rpg.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -17,15 +15,14 @@ public class Hero {
     private Vector2 position;
     private Vector2 dst;
     private Vector2 tmp;
-    private float lifetime;
+    private float lifeTime;
     private float speed;
     private int hp;
     private int hpMax;
     private StringBuilder strBuilder;
-
-    public Vector2 getPosition() {
-        return position;
-    }
+    private int gold;
+    private float randomX;
+    private float randomY;
 
     public Hero(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -39,10 +36,32 @@ public class Hero {
         this.hpMax = 10;
         this.hp = 10;
         this.strBuilder = new StringBuilder();
+        this.gold = 0;
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    private void respawn() {
+        hp = hpMax;
+        randomX = (float) (50 + Math.random() * 1200);
+        randomY = (float) (50 + Math.random() * 640);
+        position.set(randomX, randomY);
+        dst.set(randomX, randomY);
+    }
+
+    public boolean takeDamage(int amount) {
+        hp -= amount;
+        if (hp <= 0) {
+            respawn();
+            return true;
+        }
+        return false;
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(texturePointer, dst.x - 30, dst.y - 30, 30, 30, 60, 60, 0.5f, 0.5f, lifetime * 90.0f);
+        batch.draw(texturePointer, dst.x - 30, dst.y - 30, 30, 30, 60, 60, 0.5f, 0.5f, lifeTime * 90.0f);
         batch.draw(texture, position.x - 30, position.y - 30, 30, 30, 60, 60, 1, 1, 0);
         batch.draw(textureHp, position.x - 30, position.y + 30, 60 * ((float) hp / hpMax), 12);
     }
@@ -51,11 +70,12 @@ public class Hero {
         strBuilder.setLength(0);
         strBuilder.append("Class: ").append("Knight").append("\n");
         strBuilder.append("HP: ").append(hp).append(" / ").append(hpMax).append("\n");
+        strBuilder.append("Gold: ").append(gold).append("\n");
         font.draw(batch, strBuilder, 10, 710);
     }
 
     public void update(float dt) {
-        lifetime += dt;
+        lifeTime += dt;
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             dst.set(Gdx.input.getX(), 720.0f - Gdx.input.getY());
         }
@@ -68,5 +88,9 @@ public class Hero {
         } else {
             position.set(dst);
         }
+    }
+
+    public void addGold(int gold) {
+        this.gold += gold;
     }
 }

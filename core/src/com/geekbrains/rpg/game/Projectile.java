@@ -10,6 +10,7 @@ public class Projectile implements Poolable {
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
+    private int damage;
 
     public Vector2 getPosition() {
         return position;
@@ -25,6 +26,10 @@ public class Projectile implements Poolable {
         this.position = new Vector2(0, 0);
         this.velocity = new Vector2(0, 0);
         this.active = false;
+        this.damage = 1;
+    }
+    public int getDamage() {
+        return damage;
     }
 
     public void setup(TextureRegion textureRegion, float x, float y, float targetX, float targetY) {
