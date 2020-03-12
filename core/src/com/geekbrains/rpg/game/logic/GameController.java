@@ -7,15 +7,29 @@ public class GameController {
     private ProjectilesController projectilesController;
     private Map map;
     private Hero hero;
-    private Monster monster;
+    private MonstersController monstersController;
     private Vector2 tmp, tmp2;
+    private float respawnNewMonsterTime;
+
+    public GameController() {
+        this.projectilesController = new ProjectilesController();
+        this.monstersController = new MonstersController(this);
+        for (int i = 0 ; i< 4; i++) {
+            this.monstersController.getMonster();
+        }
+        this.hero = new Hero(this);
+        this.map = new Map();
+        this.tmp = new Vector2(0, 0);
+        this.tmp2 = new Vector2(0, 0);
+        this.respawnNewMonsterTime = 0f;
+    }
 
     public Hero getHero() {
         return hero;
     }
 
-    public Monster getMonster() {
-        return monster;
+    public MonstersController getMonstersController() {
+        return this.monstersController;
     }
 
     public Map getMap() {
@@ -26,21 +40,22 @@ public class GameController {
         return projectilesController;
     }
 
-    public GameController() {
-        this.projectilesController = new ProjectilesController();
-        this.hero = new Hero(this);
-        this.monster = new Monster(this);
-        this.map = new Map();
-        this.tmp = new Vector2(0, 0);
-        this.tmp2 = new Vector2(0, 0);
-    }
-
     public void update(float dt) {
+        respawnNewMonsterTime += dt;
+        if (respawnNewMonsterTime > 30f) {
+            respawnNewMonsterTime = 0.0f;
+            monstersController.getMonster().respawn();
+        }
         hero.update(dt);
-        monster.update(dt);
+        monstersController.update(dt);
+
 
         checkCollisions();
-        collideUnits(hero, monster);
+        for (int i = 0; i < monstersController.getActiveList().size(); i++) {
+            Monster monster = monstersController.getActiveList().get(i);
+            collideUnits(hero, monster);
+        }
+
         projectilesController.update(dt);
     }
 
@@ -70,10 +85,13 @@ public class GameController {
                 p.deactivate();
                 continue;
             }
-            if (p.getPosition().dst(monster.getPosition()) < 24) {
-                p.deactivate();
-                if (monster.takeDamage(1)) {
-                    hero.addCoins(MathUtils.random(1, 10));
+            for (int j = 0; j < monstersController.getActiveList().size(); j++) {
+                Monster monster = monstersController.getActiveList().get(j);
+                if (p.getPosition().dst(monster.getPosition()) < 24) {
+                    p.deactivate();
+                    if (monster.takeDamage(1)) {
+                        hero.addCoins(MathUtils.random(1, 10));
+                    }
                 }
             }
         }
