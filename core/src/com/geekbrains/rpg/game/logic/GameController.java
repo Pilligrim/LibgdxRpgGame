@@ -3,25 +3,19 @@ package com.geekbrains.rpg.game.logic;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameController {
     private ProjectilesController projectilesController;
+    private MonstersController monstersController;
+    private List<GameCharacter> allCharacters;
     private Map map;
     private Hero hero;
-    private MonstersController monstersController;
     private Vector2 tmp, tmp2;
-    private float respawnNewMonsterTime;
 
-    public GameController() {
-        this.projectilesController = new ProjectilesController();
-        this.monstersController = new MonstersController(this);
-        for (int i = 0 ; i< 4; i++) {
-            this.monstersController.getMonster();
-        }
-        this.hero = new Hero(this);
-        this.map = new Map();
-        this.tmp = new Vector2(0, 0);
-        this.tmp2 = new Vector2(0, 0);
-        this.respawnNewMonsterTime = 0f;
+    public List<GameCharacter> getAllCharacters() {
+        return allCharacters;
     }
 
     public Hero getHero() {
@@ -29,7 +23,7 @@ public class GameController {
     }
 
     public MonstersController getMonstersController() {
-        return this.monstersController;
+        return monstersController;
     }
 
     public Map getMap() {
@@ -40,22 +34,24 @@ public class GameController {
         return projectilesController;
     }
 
+    public GameController() {
+        this.allCharacters = new ArrayList<>();
+        this.projectilesController = new ProjectilesController();
+        this.hero = new Hero(this);
+        this.map = new Map();
+        this.monstersController = new MonstersController(this, 5);
+        this.tmp = new Vector2(0, 0);
+        this.tmp2 = new Vector2(0, 0);
+    }
+
     public void update(float dt) {
-        respawnNewMonsterTime += dt;
-        if (respawnNewMonsterTime > 30f) {
-            respawnNewMonsterTime = 0.0f;
-            monstersController.getMonster().respawn();
-        }
+        allCharacters.clear();
+        allCharacters.add(hero);
+        allCharacters.addAll(monstersController.getActiveList());
+
         hero.update(dt);
         monstersController.update(dt);
-
-
         checkCollisions();
-        for (int i = 0; i < monstersController.getActiveList().size(); i++) {
-            Monster monster = monstersController.getActiveList().get(i);
-            collideUnits(hero, monster);
-        }
-
         projectilesController.update(dt);
     }
 
@@ -79,17 +75,36 @@ public class GameController {
     }
 
     public void checkCollisions() {
+        for (int i = 0; i < monstersController.getActiveList().size(); i++) {
+            Monster m = monstersController.getActiveList().get(i);
+            collideUnits(hero, m);
+        }
+        for (int i = 0; i < monstersController.getActiveList().size() - 1; i++) {
+            Monster m = monstersController.getActiveList().get(i);
+            for (int j = i + 1; j < monstersController.getActiveList().size(); j++) {
+                Monster m2 = monstersController.getActiveList().get(j);
+                collideUnits(m, m2);
+            }
+        }
+
         for (int i = 0; i < projectilesController.getActiveList().size(); i++) {
             Projectile p = projectilesController.getActiveList().get(i);
             if (!map.isAirPassable(p.getCellX(), p.getCellY())) {
                 p.deactivate();
                 continue;
             }
+            if (p.getPosition().dst(hero.getPosition()) < 24 && p.getOwner() != hero) {
+                p.deactivate();
+                hero.takeDamage(p.getOwner(), 1);
+            }
             for (int j = 0; j < monstersController.getActiveList().size(); j++) {
-                Monster monster = monstersController.getActiveList().get(j);
-                if (p.getPosition().dst(monster.getPosition()) < 24) {
+                Monster m = monstersController.getActiveList().get(j);
+                if (p.getOwner() == m) {
+                    continue;
+                }
+                if (p.getPosition().dst(m.getPosition()) < 24) {
                     p.deactivate();
-                    if (monster.takeDamage(1)) {
+                    if (m.takeDamage(p.getOwner(), 1)) {
                         hero.addCoins(MathUtils.random(1, 10));
                     }
                 }
