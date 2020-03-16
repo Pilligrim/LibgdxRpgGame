@@ -9,10 +9,15 @@ import java.util.List;
 public class GameController {
     private ProjectilesController projectilesController;
     private MonstersController monstersController;
+    private WeaponsController weaponsController;
     private List<GameCharacter> allCharacters;
     private Map map;
     private Hero hero;
     private Vector2 tmp, tmp2;
+
+    public WeaponsController getWeaponsController() {
+        return weaponsController;
+    }
 
     public List<GameCharacter> getAllCharacters() {
         return allCharacters;
@@ -42,6 +47,7 @@ public class GameController {
         this.monstersController = new MonstersController(this, 5);
         this.tmp = new Vector2(0, 0);
         this.tmp2 = new Vector2(0, 0);
+        this.weaponsController = new WeaponsController(this);
     }
 
     public void update(float dt) {
@@ -53,6 +59,7 @@ public class GameController {
         monstersController.update(dt);
         checkCollisions();
         projectilesController.update(dt);
+        weaponsController.update(dt);
     }
 
     public void collideUnits(GameCharacter u1, GameCharacter u2) {
@@ -84,6 +91,13 @@ public class GameController {
             for (int j = i + 1; j < monstersController.getActiveList().size(); j++) {
                 Monster m2 = monstersController.getActiveList().get(j);
                 collideUnits(m, m2);
+            }
+        }
+
+        for (int i = 0; i < weaponsController.getActiveList().size(); i++) {
+            Weapon w = weaponsController.getActiveList().get(i);
+            if (hero.getPosition().dst(w.getPosition()) < 20) {
+                w.consume(hero);
             }
         }
 

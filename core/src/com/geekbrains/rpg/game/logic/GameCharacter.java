@@ -11,20 +11,18 @@ public abstract class GameCharacter implements MapElement {
     public enum State {
         IDLE, MOVE, ATTACK, PURSUIT, RETREAT
     }
-
-    public enum Type {
-        MELEE, RANGED
-    }
-
     protected GameController gc;
 
     protected TextureRegion texture;
     protected TextureRegion textureHp;
 
-    protected Type type;
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    protected Weapon weapon;
     protected State state;
     protected float stateTimer;
-    protected float attackRadius;
 
     protected GameCharacter lastAttacker;
     protected GameCharacter target;
@@ -41,6 +39,10 @@ public abstract class GameCharacter implements MapElement {
     protected float attackTime;
     protected float speed;
     protected int hp, hpMax;
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
 
     public int getCellX() {
         return (int) position.x / 80;
@@ -92,22 +94,21 @@ public abstract class GameCharacter implements MapElement {
         if (state == State.ATTACK) {
             dst.set(target.getPosition());
         }
-        if (state == State.MOVE || state == State.RETREAT || (state == State.ATTACK && this.position.dst(target.getPosition()) > attackRadius - 5)) {
+        if (state == State.MOVE || state == State.RETREAT || (state == State.ATTACK && this.position.dst(target.getPosition()) > weapon.getRange() - 10)) {
             moveToDst(dt);
         }
-        if (state == State.ATTACK && this.position.dst(target.getPosition()) < attackRadius) {
+        if (state == State.ATTACK && this.position.dst(target.getPosition()) < weapon.getRange()) {
             attackTime += dt;
-            if (attackTime > 0.3f) {
+            if (attackTime > weapon.getSpeed()) {
                 attackTime = 0.0f;
-                if (type == Type.MELEE) {
-                    target.takeDamage(this, 1);
+                if (weapon.getType() == Weapon.Type.MELEE) {
+                    target.takeDamage(this, weapon.getDamage());
                 }
-                if (type == Type.RANGED) {
-                    gc.getProjectilesController().setup(this, position.x, position.y, target.getPosition().x, target.getPosition().y);
+                if (weapon.getType() == Weapon.Type.RANGED && target != null) {
+                    gc.getProjectilesController().setup(this, position.x, position.y, target.getPosition().x, target.getPosition().y, weapon.getDamage());
                 }
             }
         }
-        area.setPosition(position.x, position.y - 20);
     }
 
     public void moveToDst(float dt) {
