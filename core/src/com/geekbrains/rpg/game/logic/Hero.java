@@ -17,8 +17,8 @@ public class Hero extends GameCharacter {
     }
 
     public Hero(GameController gc) {
-        super(gc, 10, 300.0f);
-        this.texture = Assets.getInstance().getAtlas().findRegion("knight");
+        super(gc, 80, 300.0f);
+        this.textures = new TextureRegion(Assets.getInstance().getAtlas().findRegion("knight")).split(60, 60);
         this.texturePointer = Assets.getInstance().getAtlas().findRegion("pointer");
         this.changePosition(100.0f, 100.0f);
         this.dst.set(position);
@@ -29,8 +29,10 @@ public class Hero extends GameCharacter {
     @Override
     public void render(SpriteBatch batch, BitmapFont font) {
         batch.draw(texturePointer, dst.x - 30, dst.y - 30, 30, 30, 60, 60, 0.5f, 0.5f, lifetime * 90.0f);
-        batch.draw(texture, position.x - 30, position.y - 30, 30, 30, 60, 60, 1, 1, 0);
-        batch.draw(textureHp, position.x - 30, position.y + 30, 60 * ((float) hp / hpMax), 12);
+        batch.draw(textures[0][getCurrentFrameIndex()], position.x - 30, position.y - 30, 30, 30, 60, 60, 1, 1, 0);
+        if(hp <hpMax) {
+            batch.draw(textureHp, position.x - 30, position.y + 30, 60 * ((float) hp / hpMax), 12);
+        }
     }
 
     public void renderGUI(SpriteBatch batch, BitmapFont font) {

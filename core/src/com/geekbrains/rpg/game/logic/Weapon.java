@@ -36,10 +36,8 @@ public class Weapon implements MapElement, Poolable, Consumable {
 
     @Override
     public void consume(GameCharacter gameCharacter) {
-        if (this.getDps() > gameCharacter.getWeapon().getDps()) {
-            gameCharacter.setWeapon(this);
-            active = false;
-        }
+        gameCharacter.setWeapon(this);
+        active = false;
     }
 
     @Override
@@ -73,7 +71,7 @@ public class Weapon implements MapElement, Poolable, Consumable {
         return maxDamage;
     }
 
-    public int getDamage() {
+    public int generateDamage() {
         return MathUtils.random(minDamage, maxDamage);
     }
 
@@ -105,9 +103,9 @@ public class Weapon implements MapElement, Poolable, Consumable {
     public void setup(Type type, String title, int minDamage, int maxDamage, float speed, float range) {
         this.type = type;
         if (type == Type.MELEE) {
-            texture = Assets.getInstance().getAtlas().findRegion("sword");
+            texture = Assets.getInstance().getAtlas().findRegion("weaponMelee");
         } else {
-            texture = Assets.getInstance().getAtlas().findRegion("bow");
+            texture = Assets.getInstance().getAtlas().findRegion("weaponRanged");
         }
         this.title = title;
         this.minDamage = minDamage;
@@ -137,9 +135,5 @@ public class Weapon implements MapElement, Poolable, Consumable {
                 0.4f,
                 60.0f
         );
-    }
-
-    public float getDps() {
-        return (maxDamage + minDamage) / 2 * speed;
     }
 }

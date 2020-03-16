@@ -19,6 +19,10 @@ public class Projectile implements Poolable, MapElement {
         return owner;
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
     @Override
     public int getCellX() {
         return (int) position.x / 80;
@@ -50,8 +54,8 @@ public class Projectile implements Poolable, MapElement {
         this.textureRegion = textureRegion;
         this.position.set(x, y);
         this.velocity.set(targetX, targetY).sub(x, y).nor().scl(800.0f);
-        this.active = true;
         this.damage = damage;
+        this.active = true;
     }
 
     public void deactivate() {
