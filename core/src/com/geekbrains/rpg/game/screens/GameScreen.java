@@ -7,6 +7,7 @@ import com.geekbrains.rpg.game.logic.WorldRenderer;
 public class GameScreen extends AbstractScreen {
     private GameController gc;
     private WorldRenderer worldRenderer;
+    private GameButton gameButton;
 
     public GameScreen(SpriteBatch batch) {
         super(batch);
@@ -16,11 +17,16 @@ public class GameScreen extends AbstractScreen {
     public void show() {
         gc = new GameController();
         worldRenderer = new WorldRenderer(gc, batch);
+        gameButton = new GameButton();
     }
 
     @Override
     public void render(float delta) {
-        gc.update(delta);
+        if (!gameButton.isPause()) {
+            gc.update(delta);
+        }
+        gameButton.update(delta);
         worldRenderer.render();
+        gameButton.render(delta);
     }
 }

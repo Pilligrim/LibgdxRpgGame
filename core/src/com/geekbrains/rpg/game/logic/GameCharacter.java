@@ -41,6 +41,7 @@ public abstract class GameCharacter implements MapElement {
     protected float visionRadius;
     protected float speed;
     protected int hp, hpMax;
+    protected int coins;
 
     protected Weapon weapon;
 
@@ -71,6 +72,18 @@ public abstract class GameCharacter implements MapElement {
             position.y = Map.MAP_CELLS_HEIGHT * 80 - 1 + 20;
         }
         area.setPosition(position.x, position.y - 20);
+    }
+
+    public void restoreHp(float percent) {
+        int amount = (int) (hpMax * percent);
+        hp += amount;
+        if (hp > hpMax) {
+            hp = hpMax;
+        }
+    }
+
+    public void addCoins(int amount) {
+        coins += amount;
     }
 
     public void changePosition(Vector2 newPosition) {
@@ -104,6 +117,7 @@ public abstract class GameCharacter implements MapElement {
         this.stateTimer = 1.0f;
         this.timePerFrame = 0.2f;
         this.target = null;
+        this.coins = 0;
     }
 
     public int getCurrentFrameIndex() {

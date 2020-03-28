@@ -1,6 +1,5 @@
 package com.geekbrains.rpg.game.logic;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -9,11 +8,24 @@ import java.util.List;
 public class GameController {
     private ProjectilesController projectilesController;
     private MonstersController monstersController;
+    private PowerUpsController powerUpsController;
     private WeaponsController weaponsController;
     private List<GameCharacter> allCharacters;
     private Map map;
     private Hero hero;
     private Vector2 tmp, tmp2;
+
+    public GameController() {
+        this.allCharacters = new ArrayList<>();
+        this.projectilesController = new ProjectilesController();
+        this.powerUpsController = new PowerUpsController(this);
+        this.weaponsController = new WeaponsController(this);
+        this.hero = new Hero(this);
+        this.map = new Map();
+        this.monstersController = new MonstersController(this, 5);
+        this.tmp = new Vector2(0, 0);
+        this.tmp2 = new Vector2(0, 0);
+    }
 
     public List<GameCharacter> getAllCharacters() {
         return allCharacters;
@@ -39,15 +51,8 @@ public class GameController {
         return weaponsController;
     }
 
-    public GameController() {
-        this.allCharacters = new ArrayList<>();
-        this.projectilesController = new ProjectilesController();
-        this.weaponsController = new WeaponsController(this);
-        this.hero = new Hero(this);
-        this.map = new Map();
-        this.monstersController = new MonstersController(this, 5);
-        this.tmp = new Vector2(0, 0);
-        this.tmp2 = new Vector2(0, 0);
+    public PowerUpsController getPowerUpsController() {
+        return powerUpsController;
     }
 
     public void update(float dt) {
@@ -60,6 +65,7 @@ public class GameController {
         checkCollisions();
         projectilesController.update(dt);
         weaponsController.update(dt);
+        powerUpsController.update(dt);
     }
 
     public void collideUnits(GameCharacter u1, GameCharacter u2) {
@@ -119,6 +125,13 @@ public class GameController {
                     p.deactivate();
                     m.takeDamage(p.getOwner(), p.getDamage());
                 }
+            }
+        }
+        
+        for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
+            PowerUp p = powerUpsController.getActiveList().get(i);
+            if (p.getPosition().dst(hero.getPosition()) < 24) {
+                p.consume(hero);
             }
         }
     }
