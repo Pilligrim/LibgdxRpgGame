@@ -10,6 +10,8 @@ public class DesktopLauncher {
 		config.width = 1280;
 		config.height = 720;
 		config.foregroundFPS = 60;
+		config.x = 125;
+		config.y = 60;
 		new LwjglApplication(new GeekRpgGame(), config);
 	}
 }
