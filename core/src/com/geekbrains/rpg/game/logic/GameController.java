@@ -1,8 +1,14 @@
 package com.geekbrains.rpg.game.logic;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.logic.character.GameCharacter;
+import com.geekbrains.rpg.game.logic.character.Hero;
+import com.geekbrains.rpg.game.logic.character.Monster;
+import com.geekbrains.rpg.game.logic.controller.*;
+import com.geekbrains.rpg.game.logic.inventory.PowerUp;
+import com.geekbrains.rpg.game.logic.inventory.Projectile;
+import com.geekbrains.rpg.game.logic.inventory.Weapon;
 import com.geekbrains.rpg.game.screens.ScreenManager;
 
 import java.util.ArrayList;
@@ -13,6 +19,7 @@ public class GameController {
     private PowerUpsController powerUpsController;
     private MonstersController monstersController;
     private WeaponsController weaponsController;
+    private HintsController hintsController;
     private SpecialEffectsController specialEffectsController;
     private List<GameCharacter> allCharacters;
     private Map map;
@@ -61,11 +68,16 @@ public class GameController {
         return weaponsController;
     }
 
+    public HintsController getHintsController() {
+        return hintsController;
+    }
+
     public GameController() {
         this.allCharacters = new ArrayList<>();
         this.projectilesController = new ProjectilesController(this);
         this.weaponsController = new WeaponsController(this);
         this.powerUpsController = new PowerUpsController(this);
+        this.hintsController= new HintsController();
         this.hero = new Hero(this);
         this.map = new Map();
         this.monstersController = new MonstersController(this, 25);
@@ -91,6 +103,7 @@ public class GameController {
         weaponsController.update(dt);
         powerUpsController.update(dt);
         specialEffectsController.update(dt);
+        hintsController.update(dt);
     }
 
     public void collideUnits(GameCharacter u1, GameCharacter u2) {

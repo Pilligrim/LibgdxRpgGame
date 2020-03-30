@@ -1,4 +1,4 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.character;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.logic.GameController;
+import com.geekbrains.rpg.game.logic.Map;
+import com.geekbrains.rpg.game.logic.inventory.Weapon;
 import com.geekbrains.rpg.game.logic.utils.MapElement;
 import com.geekbrains.rpg.game.screens.utils.Assets;
 
@@ -69,12 +72,13 @@ public abstract class GameCharacter implements MapElement {
         return weapon;
     }
 
-    public void restoreHp(float percent) {
+    public int restoreHp(float percent) {
         int amount = (int) (hpMax * percent);
         hp += amount;
         if (hp > hpMax) {
             hp = hpMax;
         }
+        return amount;
     }
 
     public void changePosition(float x, float y) {
