@@ -24,6 +24,7 @@ public class PowerUp implements Consumable, Poolable, MapElement {
     private Type type;
     private TextureRegion[][] textures;
     private Vector2 position;
+    private Vector2 velocity;
     private float time;
     private boolean active;
 
@@ -35,6 +36,7 @@ public class PowerUp implements Consumable, Poolable, MapElement {
         this.gc = gc;
         this.textures = textures;
         this.position = new Vector2(0, 0);
+        this.velocity = new Vector2(0, 0);
     }
 
     @Override
@@ -51,7 +53,8 @@ public class PowerUp implements Consumable, Poolable, MapElement {
     }
 
     public void setup(float x, float y) {
-        position.set(x + MathUtils.random(-60.0f, 60.0f), y + MathUtils.random(-60.0f, 60.0f));
+        position.set(x, y);
+        velocity.set(MathUtils.random(-60.0f, 60.0f), MathUtils.random(-60.0f, 60.0f));
         time = 0.0f;
         type = Type.values()[MathUtils.random(0, 1)];
         active = true;
@@ -59,6 +62,7 @@ public class PowerUp implements Consumable, Poolable, MapElement {
 
     public void update(float dt) {
         time += dt;
+        position.mulAdd(velocity, dt);
         if (time > 4.0f) {
             active = false;
         }
@@ -79,6 +83,10 @@ public class PowerUp implements Consumable, Poolable, MapElement {
         return (int) (position.y / Map.CELL_HEIGHT);
     }
 
+    @Override
+    public float getY() {
+        return position.y;
+    }
 
     @Override
     public boolean isActive() {
