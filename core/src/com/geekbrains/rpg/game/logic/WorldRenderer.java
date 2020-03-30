@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.logic.character.Monster;
+import com.geekbrains.rpg.game.logic.inventory.PowerUp;
+import com.geekbrains.rpg.game.logic.inventory.Projectile;
+import com.geekbrains.rpg.game.logic.inventory.Weapon;
 import com.geekbrains.rpg.game.logic.utils.MapElement;
 import com.geekbrains.rpg.game.screens.ScreenManager;
 import com.geekbrains.rpg.game.screens.utils.Assets;
@@ -22,6 +26,7 @@ public class WorldRenderer {
     private GameController gc;
     private SpriteBatch batch;
     private BitmapFont font14;
+    private BitmapFont font24;
     private BitmapFont font32;
     private List<MapElement>[] drawables;
     private Vector2 pov;
@@ -35,6 +40,7 @@ public class WorldRenderer {
     public WorldRenderer(GameController gameController, SpriteBatch batch) {
         this.gc = gameController;
         this.font14 = Assets.getInstance().getAssetManager().get("fonts/font14.ttf");
+        this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
         this.font32 = Assets.getInstance().getAssetManager().get("fonts/font32.ttf");
         this.batch = batch;
         this.pov = new Vector2(0, 0);
@@ -117,6 +123,7 @@ public class WorldRenderer {
             }
         }
         gc.getSpecialEffectsController().render(batch);
+        gc.getHintsController().render(batch, font24);
         batch.end();
         frameBuffer.end();
 

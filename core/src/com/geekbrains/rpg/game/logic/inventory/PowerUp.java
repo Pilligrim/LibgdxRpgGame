@@ -1,10 +1,14 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.inventory;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.logic.GameController;
+import com.geekbrains.rpg.game.logic.Map;
+import com.geekbrains.rpg.game.logic.character.GameCharacter;
 import com.geekbrains.rpg.game.logic.utils.Consumable;
 import com.geekbrains.rpg.game.logic.utils.MapElement;
 import com.geekbrains.rpg.game.logic.utils.Poolable;
@@ -44,10 +48,13 @@ public class PowerUp implements Consumable, Poolable, MapElement {
         active = false;
         switch (type) {
             case MEDKIT:
-                gameCharacter.restoreHp(0.1f);
+                int restored = gameCharacter.restoreHp(0.1f);
+                gc.getHintsController().setupAnyAmount(gameCharacter.getPosition().x, gameCharacter.getPosition().y, Color.GREEN, "+", restored);
                 break;
             case COINS:
-                gameCharacter.addCoins(MathUtils.random(3, 10));
+                int amount = MathUtils.random(3, 10);
+                gameCharacter.addCoins(amount);
+                gc.getHintsController().setupAnyAmount(gameCharacter.getPosition().x, gameCharacter.getPosition().y, Color.YELLOW, "+", amount);
                 break;
         }
     }

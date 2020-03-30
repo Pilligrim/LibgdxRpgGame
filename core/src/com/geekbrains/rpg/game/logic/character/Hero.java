@@ -1,10 +1,12 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.character;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.geekbrains.rpg.game.logic.GameController;
 import com.geekbrains.rpg.game.screens.utils.Assets;
 
 public class Hero extends GameCharacter {
@@ -27,6 +29,14 @@ public class Hero extends GameCharacter {
         strBuilder.append("Weapon: ").append(weapon.getTitle()).append(" [").append(weapon.getMinDamage()).append("-").append(weapon.getMaxDamage()).append("]\n");
         font.draw(batch, strBuilder, 10, 710);
     }
+
+    @Override
+    public boolean takeDamage(GameCharacter attacker, int amount) {
+        // sound.play();
+        gc.getHintsController().setupAnyAmount(position.x, position.y, Color.RED, "-", amount);
+        return super.takeDamage(attacker, amount);
+    }
+
 
     @Override
     public void onDeath() {
