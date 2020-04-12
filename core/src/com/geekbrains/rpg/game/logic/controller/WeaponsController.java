@@ -1,7 +1,9 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
+import com.geekbrains.rpg.game.logic.GameController;
+import com.geekbrains.rpg.game.logic.inventory.Weapon;
 import com.geekbrains.rpg.game.logic.utils.ObjectPool;
 
 import java.io.BufferedReader;

@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.logic.character.Monster;
+import com.geekbrains.rpg.game.logic.inventory.PowerUp;
+import com.geekbrains.rpg.game.logic.inventory.Projectile;
+import com.geekbrains.rpg.game.logic.inventory.Weapon;
 import com.geekbrains.rpg.game.logic.utils.MapElement;
 import com.geekbrains.rpg.game.screens.ScreenManager;
 import com.geekbrains.rpg.game.screens.utils.Assets;
@@ -136,7 +140,7 @@ public class WorldRenderer {
         batch.setShader(null);
 
         batch.begin();
-        gc.getHero().renderGUI(batch, font24);
+        gc.getHero().renderGUI(batch, font14);
         batch.end();
 
         ScreenManager.getInstance().pointCameraTo(pov);

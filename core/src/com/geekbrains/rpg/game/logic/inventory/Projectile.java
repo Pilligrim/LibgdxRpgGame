@@ -1,9 +1,12 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.inventory;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.logic.GameController;
+import com.geekbrains.rpg.game.logic.Map;
+import com.geekbrains.rpg.game.logic.character.GameCharacter;
 import com.geekbrains.rpg.game.logic.utils.MapElement;
 import com.geekbrains.rpg.game.logic.utils.Poolable;
 

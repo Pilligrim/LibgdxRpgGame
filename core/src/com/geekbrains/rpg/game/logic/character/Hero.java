@@ -1,4 +1,4 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.character;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.geekbrains.rpg.game.logic.GameController;
 import com.geekbrains.rpg.game.screens.utils.Assets;
 
 public class Hero extends GameCharacter {
@@ -21,12 +22,15 @@ public class Hero extends GameCharacter {
         this.strBuilder = new StringBuilder();
         this.weapon = gc.getWeaponsController().getOneFromAnyPrototype();
         this.sound = Gdx.audio.newSound(Gdx.files.internal("audio/explosion.wav"));
+        this.characteristic = new Characteristic(1);
     }
 
     public void renderGUI(SpriteBatch batch, BitmapFont font) {
         strBuilder.setLength(0);
         strBuilder.append("Class: ").append("Knight").append("\n");
         strBuilder.append("HP: ").append(hp).append(" / ").append(hpMax).append("\n");
+        strBuilder.append("Level: ").append(characteristic.getLevel()).append("\n");
+        strBuilder.append("Experience: ").append(characteristic.getCurrExperience()).append(" / ").append(characteristic.getMaxExperience()).append("\n");
         strBuilder.append("Coins: ").append(coins).append("\n");
         strBuilder.append("Weapon: ").append(weapon.getTitle()).append(" [").append(weapon.getMinDamage()).append("-").append(weapon.getMaxDamage()).append("]\n");
         font.draw(batch, strBuilder, 10, 710);
@@ -37,6 +41,7 @@ public class Hero extends GameCharacter {
         super.onDeath();
         coins = 0;
         hp = hpMax;
+        characteristic.setCurrExperience(0);
     }
 
     @Override

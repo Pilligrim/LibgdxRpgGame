@@ -1,4 +1,4 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.inventory;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;

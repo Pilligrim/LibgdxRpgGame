@@ -1,8 +1,9 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.controller;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.geekbrains.rpg.game.logic.inventory.SpecialEffect;
 import com.geekbrains.rpg.game.logic.utils.ObjectPool;
 import com.geekbrains.rpg.game.screens.utils.Assets;
 

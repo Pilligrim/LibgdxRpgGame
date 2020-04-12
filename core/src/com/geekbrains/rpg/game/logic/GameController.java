@@ -2,10 +2,15 @@ package com.geekbrains.rpg.game.logic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.logic.character.GameCharacter;
+import com.geekbrains.rpg.game.logic.character.Hero;
+import com.geekbrains.rpg.game.logic.character.Monster;
+import com.geekbrains.rpg.game.logic.controller.*;
+import com.geekbrains.rpg.game.logic.inventory.PowerUp;
+import com.geekbrains.rpg.game.logic.inventory.Projectile;
+import com.geekbrains.rpg.game.logic.inventory.Weapon;
 import com.geekbrains.rpg.game.screens.ScreenManager;
-import com.geekbrains.rpg.game.screens.utils.Assets;
 
 import java.util.ArrayList;
 import java.util.List;

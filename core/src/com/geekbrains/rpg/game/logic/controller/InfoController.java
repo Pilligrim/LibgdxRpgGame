@@ -1,9 +1,10 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.controller;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.geekbrains.rpg.game.logic.inventory.InfoText;
 import com.geekbrains.rpg.game.logic.utils.ObjectPool;
 
 public class InfoController extends ObjectPool<InfoText> {

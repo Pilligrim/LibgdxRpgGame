@@ -1,4 +1,4 @@
-package com.geekbrains.rpg.game.logic;
+package com.geekbrains.rpg.game.logic.character;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.geekbrains.rpg.game.logic.Calculator;
+import com.geekbrains.rpg.game.logic.GameController;
+import com.geekbrains.rpg.game.logic.Map;
+import com.geekbrains.rpg.game.logic.inventory.Weapon;
 import com.geekbrains.rpg.game.logic.utils.MapElement;
 import com.geekbrains.rpg.game.screens.utils.Assets;
 
@@ -24,6 +28,7 @@ public abstract class GameCharacter implements MapElement {
 
     protected State state;
     protected float stateTimer;
+    protected Characteristic characteristic;
 
     protected GameCharacter lastAttacker;
     protected GameCharacter target;
@@ -47,6 +52,14 @@ public abstract class GameCharacter implements MapElement {
     protected int coins;
 
     protected Weapon weapon;
+
+    public int getCharacteristic() {
+        return characteristic.getLevel();
+    }
+
+    public int getStrength() {
+        return characteristic.getStrength();
+    }
 
     public void addCoins(int amount) {
         coins += amount;
@@ -126,6 +139,7 @@ public abstract class GameCharacter implements MapElement {
         this.stateTimer = 1.0f;
         this.timePerFrame = 0.2f;
         this.target = null;
+        this.characteristic = new Characteristic(MathUtils.random(1, 3));
     }
 
     public int getCurrentFrameIndex() {
@@ -151,10 +165,10 @@ public abstract class GameCharacter implements MapElement {
                 if (weapon.getType() == Weapon.Type.MELEE) {
                     tmp.set(target.position).sub(position);
                     gc.getSpecialEffectsController().setupSwordSwing(position.x, position.y, tmp.angle());
-                    target.takeDamage(this, weapon.generateDamage());
+                    target.takeDamage(this, Calculator.getDamage(characteristic.getStrength(), weapon.getDps()));
                 }
                 if (weapon.getType() == Weapon.Type.RANGED && target != null) {
-                    gc.getProjectilesController().setup(this, position.x, position.y, target.getPosition().x, target.getPosition().y, weapon.generateDamage());
+                    gc.getProjectilesController().setup(this, position.x, position.y, target.getPosition().x, target.getPosition().y, Calculator.getDamage(characteristic.getStrength(), weapon.getDps()));
                 }
             }
         }
@@ -183,6 +197,7 @@ public abstract class GameCharacter implements MapElement {
     }
 
     public boolean takeDamage(GameCharacter attacker, int amount) {
+        attacker.addExperience(amount);
         lastAttacker = attacker;
         hp -= amount;
         damageTimer += 0.4f;
@@ -235,12 +250,19 @@ public abstract class GameCharacter implements MapElement {
         batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         batch.setColor(0.2f, 0.2f, 0.2f, 1.0f);
-        batch.draw(textureHp, position.x - 32, position.y + 28, 64, 14);
+        batch.draw(textureHp, position.x - 32, position.y + 38, 64, 14);
         float n = (float) hp / hpMax;
         float shock = damageTimer * 5.0f;
         batch.setColor(1.0f - n, n, 0.0f, 1.0f);
-        batch.draw(textureHp, position.x - 30 + MathUtils.random(-shock, shock), position.y + 30 + MathUtils.random(-shock, shock), 60 * ((float) hp / hpMax), 10);
+        batch.draw(textureHp, position.x - 30 + MathUtils.random(-shock, shock), position.y + 40 + MathUtils.random(-shock, shock), 60 * ((float) hp / hpMax), 10);
         batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        font.draw(batch, String.valueOf(hp), position.x - 30 + MathUtils.random(-shock, shock), position.y + 42 + MathUtils.random(-shock, shock), 60, 1, false);
+        batch.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+        font.draw(batch, String.valueOf(characteristic.getLevel()), position.x -45, position.y + 35, 60, 1, false);
+        batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        font.draw(batch, String.valueOf(hp), position.x - 30 + MathUtils.random(-shock, shock), position.y + 52 + MathUtils.random(-shock, shock), 60, 1, false);
+    }
+
+    public void addExperience(int amount) {
+        characteristic.addExperience(amount);
     }
 }
